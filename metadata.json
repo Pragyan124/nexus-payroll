@@ -1,0 +1,8 @@
+
+{
+  "name": "Nexus Payroll Pro",
+  "description": "A comprehensive SaaS-ready Payroll Management System featuring multi-company support, attendance tracking, compliance management, and an automated payroll engine.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
