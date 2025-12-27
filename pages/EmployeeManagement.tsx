@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { MOCK_EMPLOYEES } from '../store';
 import { Plus, Search, Filter, Mail, Phone, MoreVertical, ShieldCheck, Landmark } from 'lucide-react';
+import Modal from '../components/Modal';
 
 interface Props {
   companyId: string;
@@ -10,6 +11,7 @@ interface Props {
 const EmployeeManagement: React.FC<Props> = ({ companyId }) => {
   const employees = MOCK_EMPLOYEES.filter(e => e.companyId === companyId);
   const [view, setView] = useState<'grid' | 'table'>('table');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -18,11 +20,53 @@ const EmployeeManagement: React.FC<Props> = ({ companyId }) => {
           <h2 className="text-3xl font-bold text-slate-900">Employees</h2>
           <p className="text-slate-500 mt-1">Manage workforce details, KYC documents, and bank info.</p>
         </div>
-        <button className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
+        >
           <Plus size={20} />
           Onboard Employee
         </button>
       </div>
+
+      {/* Onboard Modal */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Onboard New Employee">
+        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); }}>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Full Name</label>
+              <input type="text" placeholder="John Doe" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" required />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Email</label>
+              <input type="email" placeholder="john@example.com" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" required />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Department</label>
+              <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                <option>Engineering</option>
+                <option>Product</option>
+                <option>Marketing</option>
+                <option>HR</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Designation</label>
+              <input type="text" placeholder="Senior Engineer" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" required />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Annual Salary ($)</label>
+            <input type="number" placeholder="85000" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" required />
+          </div>
+          <div className="pt-6 border-t border-slate-100 flex gap-4">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200">Cancel</button>
+            <button type="submit" className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 shadow-xl shadow-indigo-100">Create Identity</button>
+          </div>
+        </form>
+      </Modal>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row gap-4 justify-between">

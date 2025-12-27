@@ -1,12 +1,14 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus, BadgePercent, Settings, Users, Search, ChevronRight } from 'lucide-react';
+import Modal from '../components/Modal';
 
 interface Props {
   companyId: string;
 }
 
 const AllowancesManagement: React.FC<Props> = ({ companyId }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const allowances = [
     { id: 1, name: 'HRA (House Rent Allowance)', type: 'Fixed Percentage', value: '40% of Basic', category: 'Standard', employees: 'All' },
     { id: 2, name: 'Conveyance Allowance', type: 'Fixed Amount', value: '$200', category: 'Standard', employees: 'Field Staff' },
@@ -21,11 +23,61 @@ const AllowancesManagement: React.FC<Props> = ({ companyId }) => {
           <h2 className="text-3xl font-bold text-slate-900">Allowances & Benefits</h2>
           <p className="text-slate-500 mt-1">Configure recurring and one-time benefit components.</p>
         </div>
-        <button className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
+        >
           <Plus size={20} />
           Add Allowance
         </button>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add Benefit Component">
+        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); }}>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Component Name</label>
+            <input type="text" placeholder="e.g., Remote Work Stipend" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" required />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Calculation Type</label>
+              <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                <option>Fixed Amount</option>
+                <option>Percentage of Basic</option>
+                <option>Variable / Manual</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Category</label>
+              <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                <option>Standard</option>
+                <option>Incentive</option>
+                <option>Utility</option>
+                <option>Tax-Saving</option>
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Value</label>
+              <input type="text" placeholder="e.g., 500 or 10%" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" required />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Eligibility</label>
+              <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                <option>All Employees</option>
+                <option>Probation Only</option>
+                <option>Senior Management</option>
+                <option>Department Specific</option>
+              </select>
+            </div>
+          </div>
+          <div className="pt-6 border-t border-slate-100 flex gap-4">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200">Cancel</button>
+            <button type="submit" className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 shadow-xl shadow-indigo-100">Add Component</button>
+          </div>
+        </form>
+      </Modal>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[

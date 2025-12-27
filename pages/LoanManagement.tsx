@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Landmark, Calendar, Info, Clock, CheckCircle2, AlertCircle, Plus } from 'lucide-react';
+import Modal from '../components/Modal';
 
 interface Props {
   companyId: string;
@@ -11,6 +12,7 @@ interface Props {
 const LoanManagement: React.FC<Props> = ({ companyId, employeeId, role }) => {
   const isAdmin = role === 'COMPANY_ADMIN';
   const [activeTab, setActiveTab] = useState(isAdmin ? 'approvals' : 'my-loans');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const loans = [
     { id: 'L1', employee: 'Sarah Connor', amount: 5000, type: 'Personal Loan', status: 'Approved', repaid: 1200, nextEmi: 'June 01', interest: '5%' },
@@ -25,12 +27,51 @@ const LoanManagement: React.FC<Props> = ({ companyId, employeeId, role }) => {
           <p className="text-slate-500 mt-1">Manage employee financial assistance and EMI deductions.</p>
         </div>
         {!isAdmin && (
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
+          >
             <Plus size={20} />
             Apply for Loan
           </button>
         )}
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Loan Application">
+        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); }}>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Loan Type</label>
+            <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+              <option>Salary Advance (Interest Free)</option>
+              <option>Personal Loan (5% APR)</option>
+              <option>Emergency Medical Loan</option>
+              <option>Education Support</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Requested Amount ($)</label>
+            <input type="number" placeholder="e.g., 2000" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" required />
+            <p className="text-[10px] text-slate-400 italic">Maximum eligible amount: $12,400</p>
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Repayment Tenure (Months)</label>
+            <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+              <option>3 Months</option>
+              <option>6 Months</option>
+              <option>12 Months</option>
+              <option>24 Months</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Reason for Application</label>
+            <textarea placeholder="Please describe the purpose of the loan..." className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 min-h-[100px]" required></textarea>
+          </div>
+          <div className="pt-6 border-t border-slate-100 flex gap-4">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200">Cancel</button>
+            <button type="submit" className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 shadow-xl shadow-indigo-100">Submit Application</button>
+          </div>
+        </form>
+      </Modal>
 
       <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-fit">
         {isAdmin && (
@@ -68,8 +109,8 @@ const LoanManagement: React.FC<Props> = ({ companyId, employeeId, role }) => {
               <p className="text-xs text-indigo-100 leading-relaxed">Based on your 2 years of service, you are eligible for up to 3x your monthly basic salary.</p>
             </div>
             <div className="flex items-center justify-end">
-               <button className="px-6 py-3 bg-white text-indigo-900 rounded-xl font-bold hover:bg-indigo-50 transition-all">
-                 Calculate EMI
+               <button onClick={() => setIsModalOpen(true)} className="px-6 py-3 bg-white text-indigo-900 rounded-xl font-bold hover:bg-indigo-50 transition-all">
+                 Apply Now
                </button>
             </div>
           </div>
