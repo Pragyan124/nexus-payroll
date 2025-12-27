@@ -1,24 +1,23 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Building2, 
   Users, 
   CreditCard, 
   TrendingUp,
   PlusCircle,
-  MoreVertical
+  FileUp
 } from 'lucide-react';
 import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer,
   AreaChart,
-  Area 
+  Area,
+  XAxis,
+  YAxis
 } from 'recharts';
+import Modal from '../components/Modal';
 
 const data = [
   { name: 'Jan', companies: 12, revenue: 4000 },
@@ -29,6 +28,8 @@ const data = [
 ];
 
 const SaaSAdminDashboard: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -36,11 +37,61 @@ const SaaSAdminDashboard: React.FC = () => {
           <h2 className="text-3xl font-bold text-slate-900">Platform Overview</h2>
           <p className="text-slate-500 mt-1">Monitoring global NexusPay metrics across all 30 companies.</p>
         </div>
-        <button className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20"
+        >
           <PlusCircle size={20} />
           Create New Company
         </button>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Onboard Global Client">
+        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); }}>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Company Name</label>
+            <input type="text" placeholder="e.g., OmniCorp Industries" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" required />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Primary Industry</label>
+              <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                <option>Technology</option>
+                <option>Manufacturing</option>
+                <option>Logistics</option>
+                <option>Healthcare</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Pricing Tier</label>
+              <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                <option>Growth ($499/mo)</option>
+                <option>Scale ($1,299/mo)</option>
+                <option>Enterprise (Custom)</option>
+              </select>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Admin Contact Email</label>
+            <input type="email" placeholder="admin@omnicorp.com" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" required />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Module Activations</label>
+            <div className="grid grid-cols-2 gap-2">
+              {['Payroll Engine', 'Compliance Guard', 'Attendance AI', 'Loans & Capital', 'Benefits Hub'].map(mod => (
+                <label key={mod} className="flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors">
+                  <input type="checkbox" defaultChecked className="rounded text-indigo-600" />
+                  <span className="text-xs font-semibold text-slate-600">{mod}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          <div className="pt-6 border-t border-slate-100 flex gap-4">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200">Cancel</button>
+            <button type="submit" className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 shadow-xl shadow-indigo-100">Deploy Workspace</button>
+          </div>
+        </form>
+      </Modal>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[

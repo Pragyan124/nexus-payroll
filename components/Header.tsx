@@ -1,16 +1,15 @@
 
 import React from 'react';
-import { Bell, Search, LogOut, ChevronDown, UserCircle } from 'lucide-react';
+import { Bell, Search, LogOut } from 'lucide-react';
 import { UserRole } from '../types';
 
 interface HeaderProps {
-  role: UserRole;
-  setRole: (role: UserRole) => void;
-  companyId: string;
+  userName: string;
+  userRole: UserRole;
   onLogout: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ role, setRole, companyId, onLogout }) => {
+const Header: React.FC<HeaderProps> = ({ userName, userRole, onLogout }) => {
   return (
     <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 lg:px-10 sticky top-0 z-30 shadow-sm shadow-slate-200/50">
       <div className="flex-1 max-w-xl">
@@ -25,18 +24,11 @@ const Header: React.FC<HeaderProps> = ({ role, setRole, companyId, onLogout }) =
       </div>
 
       <div className="flex items-center gap-4 lg:gap-8">
-        <div className="hidden lg:flex items-center gap-2 p-1 bg-slate-100 rounded-xl">
-          {[UserRole.ADMIN, UserRole.COMPANY_ADMIN, UserRole.EMPLOYEE].map(r => (
-            <button 
-              key={r}
-              onClick={() => setRole(r)}
-              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                role === r ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500 hover:text-slate-900'
-              }`}
-            >
-              {r.split('_').pop()?.charAt(0) + r.split('_').pop()?.slice(1).toLowerCase()}
-            </button>
-          ))}
+        <div className="hidden lg:flex flex-col items-end px-4 border-r border-slate-200">
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Current Scope</span>
+          <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded mt-1">
+            {userRole.split('_').join(' ')}
+          </span>
         </div>
 
         <button className="relative p-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-all">
@@ -44,9 +36,9 @@ const Header: React.FC<HeaderProps> = ({ role, setRole, companyId, onLogout }) =
           <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
         </button>
 
-        <div className="flex items-center gap-3 pl-4 lg:pl-8 border-l border-slate-200">
+        <div className="flex items-center gap-3 pl-4 lg:pl-8">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-bold text-slate-900 leading-none">Alexander P.</p>
+            <p className="text-sm font-bold text-slate-900 leading-none">{userName}</p>
             <button 
               onClick={onLogout}
               className="text-xs font-bold text-slate-400 mt-1 hover:text-red-500 transition-colors flex items-center gap-1 ml-auto"
@@ -54,8 +46,8 @@ const Header: React.FC<HeaderProps> = ({ role, setRole, companyId, onLogout }) =
               <LogOut size={12} /> Logout
             </button>
           </div>
-          <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold border border-indigo-100">
-            AP
+          <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold border border-slate-800 shadow-md">
+            {userName.charAt(0)}
           </div>
         </div>
       </div>

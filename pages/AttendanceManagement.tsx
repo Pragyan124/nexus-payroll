@@ -1,6 +1,7 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Calendar, CheckCircle, Clock, MapPin, MoreHorizontal, User } from 'lucide-react';
+import Modal from '../components/Modal';
 
 interface Props {
   companyId: string;
@@ -10,6 +11,7 @@ interface Props {
 
 const AttendanceManagement: React.FC<Props> = ({ companyId, employeeId, role }) => {
   const isAdmin = role === 'COMPANY_ADMIN';
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -19,11 +21,59 @@ const AttendanceManagement: React.FC<Props> = ({ companyId, employeeId, role }) 
           <p className="text-slate-500 mt-1">Real-time monitoring of workforce clock-in/out activities.</p>
         </div>
         {isAdmin && (
-          <button className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
+          >
             Manual Entry
           </button>
         )}
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Manual Attendance Log">
+        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); }}>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Select Employee</label>
+            <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+              <option>Sarah Connor</option>
+              <option>John Miller</option>
+              <option>Kyle Reese</option>
+            </select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Date</label>
+              <input type="date" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" defaultValue={new Date().toISOString().split('T')[0]} required />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Status</label>
+              <select className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                <option>Present</option>
+                <option>Half-Day</option>
+                <option>Paid Leave</option>
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Clock In</label>
+              <input type="time" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Clock Out</label>
+              <input type="time" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Adjustment Reason</label>
+            <textarea placeholder="e.g., Forgot to clock in, Site visit..." className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 min-h-[100px]" required></textarea>
+          </div>
+          <div className="pt-6 border-t border-slate-100 flex gap-4">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200">Cancel</button>
+            <button type="submit" className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 shadow-xl shadow-indigo-100">Save Entry</button>
+          </div>
+        </form>
+      </Modal>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
