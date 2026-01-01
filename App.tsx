@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserRole } from './types';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -18,6 +17,7 @@ import LoanManagement from './pages/LoanManagement';
 import ReportsManagement from './pages/ReportsManagement';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
+import { Loader2 } from 'lucide-react'; // Import a loader icon
 
 interface AuthUser {
   name: string;
@@ -30,16 +30,43 @@ const App: React.FC = () => {
   const [view, setView] = useState<'landing' | 'login' | 'app'>('landing');
   const [user, setUser] = useState<AuthUser | null>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isLoading, setIsLoading] = useState(true); // <--- NEW: Loading State
+
+  // --- 1. RESTORE SESSION ON REFRESH ---
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+
+    if (storedUser && token) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setView('app'); // Skip landing page
+      } catch (error) {
+        // If data is corrupted, clear it
+        console.error("Session restore failed:", error);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+      }
+    }
+    setIsLoading(false); // Finished checking
+  }, []);
+  // -------------------------------------
 
   const handleGoToLogin = () => setView('login');
   
   const handleLoginSuccess = (userData: AuthUser) => {
+    // Note: local storage is set inside LoginPage.tsx
     setUser(userData);
     setView('app');
-    setActiveTab('dashboard'); // Reset to dashboard on new login
+    setActiveTab('dashboard');
   };
 
   const handleLogout = () => {
+    // --- 2. CLEAR SESSION ON LOGOUT ---
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    // ----------------------------------
     setUser(null);
     setView('landing');
   };
@@ -84,6 +111,15 @@ const App: React.FC = () => {
     }
   };
 
+  // --- 3. SHOW LOADER WHILE CHECKING STORAGE ---
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
+      </div>
+    );
+  }
+
   if (view === 'landing') {
     return <LandingPage onEnterApp={handleGoToLogin} />;
   }
@@ -105,7 +141,7 @@ const App: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header 
           userName={user.name}
-          userRole={user.role}
+          userRole={user.role} // Now this will be populated from storage!
           onLogout={handleLogout}
         />
         

@@ -5,6 +5,8 @@ export enum UserRole {
   EMPLOYEE = 'EMPLOYEE'
 }
 
+
+
 export interface Company {
   id: string;
   name: string;

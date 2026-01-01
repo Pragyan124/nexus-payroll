@@ -73,7 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role, activeTab, setActiveTab }) => {
             </div>
             <div className="min-w-0">
               <p className="text-sm font-bold text-white truncate">Alexander P.</p>
-              <p className="text-xs text-slate-500 truncate">{role.replace('_', ' ')}</p>
+              <p className="text-xs text-slate-500 truncate">{(role || '').replace('_', ' ')}</p>
             </div>
           </div>
         </div>
